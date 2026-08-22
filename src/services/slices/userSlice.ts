@@ -44,11 +44,6 @@ export const updateUserThunk = createAsyncThunk(
     updateUserApi(user)
 );
 
-// export const getUserOrderThunk = createAsyncThunk(
-//   'usres/getOrder',
-//   () => getO
-// )
-
 export const logoutUserThunk = createAsyncThunk('users/logout', () =>
   logoutApi()
 );

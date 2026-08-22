@@ -9,12 +9,11 @@ import { Preloader } from '@ui';
 export const ProfileOrders: FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const orders = useSelector(selectOrders);
-  const isLoading = useSelector(selectLoading); // Используем ОБЩИЙ флаг loading из слайса
+  const isLoading = useSelector(selectLoading);
   // Флаг, чтобы запустить загрузку только один раз
   const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    // ✅ ГЛАВНОЕ ПРАВИЛО: Запускаем только если еще не запускали
     if (!hasFetched) {
       dispatch(getOrders());
       setHasFetched(true);

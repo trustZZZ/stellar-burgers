@@ -208,21 +208,24 @@ export const selectError = (state: RootState) => state.burger.error;
 export const selectConstructorItems = (state: RootState) =>
   state.burger.constructorItems;
 
+// Селекторы для ленты
 export const selectFeedIsLoading = (state: RootState) =>
   state.burger.feeds.isLoading;
 export const selectFeedNumber = (state: RootState) =>
   state.burger.feedNumber || '';
+export const selectFeedOrders = (state: RootState) =>
+  state.burger.feeds?.orders ?? new Array<TOrder>();
+
 // Селекторы для заказа
 export const selectOrderRequest = (state: RootState) =>
   state.burger.orderRequest;
 export const selectOrderModalData = (state: RootState) =>
   state.burger.orderModalData;
-export const selectFeedOrders = (state: RootState) =>
-  state.burger.feeds?.orders ?? new Array<TOrder>();
 export const selectBurgerConstructor = (state: RootState) =>
   state.burger.burgerConstructor;
 export const selectOrders = (state: RootState) => state.burger.orders;
 export const selectFeeds = (state: RootState) => state.burger.feeds;
+
 // Селекторы для фильтрации по типам
 export const selectBuns = (state: RootState) =>
   state.burger.ingredients.filter((el) => el.type === 'bun');

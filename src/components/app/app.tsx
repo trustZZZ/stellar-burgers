@@ -12,14 +12,13 @@ import {
 import { ProtectedRoute } from '../protectedRoute';
 import '../../index.css';
 import styles from './app.module.css';
-import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Preloader } from '@ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchFeed,
   fetchIngredients,
-  getOrders,
   selectError,
   selectFeedNumber,
   selectIngredients,

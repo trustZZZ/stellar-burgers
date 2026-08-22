@@ -10,7 +10,7 @@ import {
 const rootReducer = combineReducers({
   burger: burgerReducer,
   user: userReducer
-}); // Заменить на импорт настоящего редьюсера
+});
 
 const store = configureStore({
   reducer: rootReducer,

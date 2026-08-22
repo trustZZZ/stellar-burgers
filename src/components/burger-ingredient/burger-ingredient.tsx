@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
-import { TIngredient } from '@utils-types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/services/store';
 import { setBun, addIngredient } from '@slices/burgerSlice';
