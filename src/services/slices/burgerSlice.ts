@@ -1,13 +1,15 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   getFeedsApi,
   getIngredientsApi,
+  getOrderByNumberApi,
   getOrdersApi,
   orderBurgerApi
 } from '@api';
 import { TIngredient, TOrder } from '@utils-types';
 import { RootState } from '../store';
+import { v4 as uuidv4 } from 'uuid';
 
 export const fetchIngredients = createAsyncThunk(
   'burger/fetchIngredients',
@@ -34,9 +36,18 @@ export const fetchFeed = createAsyncThunk('burger/fetchFeed', () =>
   getFeedsApi()
 );
 
+export const getOrderByNumber = createAsyncThunk(
+  'burger/getOrderByNumber',
+  (number: number) => getOrderByNumberApi(number)
+);
+
+interface IConstructorIngredient extends TIngredient {
+  id: string;
+}
+
 type TConstructorItems = {
   bun: TIngredient | null;
-  ingredients: TIngredient[];
+  ingredients: IConstructorIngredient[];
 };
 
 type TFeedState = {
@@ -102,15 +113,22 @@ export const burgerSlice = createSlice({
     // Добавить булку в конструктор
     setBun: (state, action: PayloadAction<TIngredient>) => {
       state.constructorItems.bun = action.payload;
+      state.burgerConstructor.bun._id = action.payload._id;
     }, // Добавить ингредиент в конструктор
-    addIngredient: (state, action: PayloadAction<TIngredient>) => {
+    addIngredient: (state, action: PayloadAction<IConstructorIngredient>) => {
       state.constructorItems.ingredients.push(action.payload);
+      state.burgerConstructor.ingredients = [
+        ...state.constructorItems.ingredients
+      ];
     }, // Удалить ингредиент (по ID)
-    removeIngredient: (state, action: PayloadAction<number>) => {
+    removeIngredient: (state, action: PayloadAction<string>) => {
       state.constructorItems.ingredients =
         state.constructorItems.ingredients.filter(
-          (el) => el !== state.constructorItems.ingredients[action.payload]
+          (el) => el.id !== action.payload
         );
+      state.burgerConstructor.ingredients = [
+        ...state.constructorItems.ingredients
+      ];
     }, // Очистить конструктор (после заказа)
     moveDownIngredient: (state, action: PayloadAction<number>) => {
       const currentIndex = action.payload;
@@ -157,9 +175,7 @@ export const burgerSlice = createSlice({
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        // ✅ ВАЖНО: Заменяем массив целиком, а не делаем push.
-        // Иначе при повторной загрузке данные продублируются.
-        state.ingredients = action.payload || [];
+        state.ingredients = action.payload;
       })
 
       // --- Логика отправки заказа ---
@@ -171,13 +187,11 @@ export const burgerSlice = createSlice({
         // 2. Заказ успешен: сохраняем данные для модалки
         state.orderRequest = false;
         state.orderModalData = Object.assign(action.payload.order);
-        state.burgerConstructor = {
-          bun: { _id: action.meta.arg.bun._id },
-          ingredients: action.meta.arg.ingredients
-        };
         // 3. Очищаем конструктор после успешного заказа (опционально, по ТЗ)
         state.constructorItems.bun = null;
         state.constructorItems.ingredients = [];
+        state.burgerConstructor.bun._id = '';
+        state.burgerConstructor.ingredients = [];
       })
       .addCase(fetchOrder.rejected, (state, action) => {
         // 4. Ошибка заказа
@@ -197,6 +211,12 @@ export const burgerSlice = createSlice({
       });
   }
 });
+
+export const addIngredientToConstructor = (ingredient: TIngredient) =>
+  burgerSlice.actions.addIngredient({
+    ...ingredient,
+    id: uuidv4()
+  });
 
 // --- 4. СЕЛЕКТОРЫ ---
 
@@ -227,14 +247,23 @@ export const selectOrders = (state: RootState) => state.burger.orders;
 export const selectFeeds = (state: RootState) => state.burger.feeds;
 
 // Селекторы для фильтрации по типам
-export const selectBuns = (state: RootState) =>
-  state.burger.ingredients.filter((el) => el.type === 'bun');
+const selectIngredientsAll = (state: RootState) => state.burger.ingredients;
 
-export const selectMains = (state: RootState) =>
-  state.burger.ingredients.filter((el) => el.type === 'main');
+// 2. Теперь создаем мемоизированные селекторы
+export const selectBuns = createSelector(
+  [selectIngredientsAll],
+  (ingredients) => ingredients.filter((el) => el.type === 'bun')
+);
 
-export const selectSauces = (state: RootState) =>
-  state.burger.ingredients.filter((el) => el.type === 'sauce');
+export const selectMains = createSelector(
+  [selectIngredientsAll],
+  (ingredients) => ingredients.filter((el) => el.type === 'main')
+);
+
+export const selectSauces = createSelector(
+  [selectIngredientsAll],
+  (ingredients) => ingredients.filter((el) => el.type === 'sauce')
+);
 
 // Экспортируем редюсер и экшены
 export default burgerSlice.reducer;

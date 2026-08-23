@@ -13,7 +13,6 @@ export const Login: FC = () => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     dispatch(loginUserThunk({ email: email, password: password }));
-    navigate('/profile');
   };
 
   return (

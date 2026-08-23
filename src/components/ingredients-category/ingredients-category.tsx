@@ -14,15 +14,20 @@ export const IngredientsCategory = forwardRef<
 
   const ingredientsCounters = useMemo(() => {
     const { bun, ingredients } = burgerConstructor;
-    const counters: { [key: string]: number } = {};
-    ingredients.forEach((ingredient: TIngredient) => {
-      if (!counters[ingredient._id]) counters[ingredient._id] = 0;
-      counters[ingredient._id]++;
+    const counters: Record<string, number> = {};
+    if (bun) {
+      counters[bun._id] = 2;
+    }
+    ingredients.forEach((ingredient) => {
+      const id = ingredient._id;
+      if (!counters[id]) {
+        counters[id] = 0;
+      }
+      counters[id]++;
     });
-    if (bun) counters[bun._id] = 2;
+    console.log(Object.keys(counters), Object.values(counters));
     return counters;
-  }, [burgerConstructor]);
-
+  }, [burgerConstructor.ingredients.length, burgerConstructor.bun._id]);
   return (
     <IngredientsCategoryUI
       title={title}

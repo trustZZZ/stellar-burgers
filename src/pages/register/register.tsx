@@ -17,7 +17,6 @@ export const Register: FC = () => {
     dispatch(
       registerUserThunk({ email: email, password: password, name: userName })
     );
-    navigate('/profile');
   };
 
   return (

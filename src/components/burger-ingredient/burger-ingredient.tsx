@@ -5,7 +5,7 @@ import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/services/store';
-import { setBun, addIngredient } from '@slices/burgerSlice';
+import { setBun, addIngredientToConstructor } from '@slices/burgerSlice';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
   ({ ingredient, count }) => {
@@ -15,7 +15,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
       if (ingredient.type === 'bun') {
         dispatch(setBun(ingredient));
       } else {
-        dispatch(addIngredient(ingredient));
+        dispatch(addIngredientToConstructor(ingredient));
       }
     };
 

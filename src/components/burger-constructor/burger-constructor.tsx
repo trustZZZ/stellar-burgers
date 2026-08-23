@@ -11,6 +11,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/services/store';
 import { selectUser } from '@slices/userSlice';
+import { useNavigate } from 'react-router-dom';
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const constructorItems = useSelector(selectConstructorItems);
@@ -18,8 +19,13 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(selectOrderModalData);
   const user = useSelector(selectUser);
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
   const onOrderClick = () => {
-    if (!constructorItems?.bun || orderRequest || !user) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!constructorItems?.bun || orderRequest) return;
     else {
       dispatch(
         fetchOrder({
