@@ -39,7 +39,6 @@ const App = () => {
     dispatch(fetchIngredients());
     dispatch(getUserThunk());
     dispatch(fetchFeed());
-    console.log(locationState, background);
   }, [dispatch]);
   const isIngredientsLoading = useSelector(selectLoading);
   const ingredients = useSelector(selectIngredients);
