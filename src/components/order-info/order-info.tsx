@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient, TOrder } from '@utils-types';
+import { TIngredient } from '@utils-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getOrderByNumber,

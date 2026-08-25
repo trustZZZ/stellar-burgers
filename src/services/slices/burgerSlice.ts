@@ -18,12 +18,10 @@ export const fetchIngredients = createAsyncThunk(
 
 export const fetchOrder = createAsyncThunk(
   'burger/fetchOrder',
-  (orderData: { bun: TIngredient; ingredients: TIngredient[] }) => {
+  (payload: { bun: TBun; ingredients: TIngredient[] }) => {
+    const { bun, ingredients } = payload;
     // Серверу нужен массив ID ингредиентов
-    const ingredientsIds = [
-      orderData.bun._id,
-      ...orderData.ingredients.map((i) => i._id)
-    ];
+    const ingredientsIds = [bun._id, ...ingredients.map((i) => i._id)];
     return orderBurgerApi(ingredientsIds);
   }
 );
@@ -81,6 +79,7 @@ type TBurgerState = {
   feeds: TFeedState;
   burgerConstructor: TBurgerConstructor;
   feedNumber: string;
+  succsess: boolean;
 };
 const initialState: TBurgerState = {
   loading: false,
@@ -103,7 +102,8 @@ const initialState: TBurgerState = {
     },
     ingredients: []
   },
-  feedNumber: ''
+  feedNumber: '',
+  succsess: false
 };
 
 export const burgerSlice = createSlice({
@@ -153,6 +153,9 @@ export const burgerSlice = createSlice({
     clearConstructor: (state) => {
       state.constructorItems.bun = null;
       state.constructorItems.ingredients = [];
+
+      state.burgerConstructor.bun._id = '';
+      state.burgerConstructor.ingredients = [];
     }, // Очистить данные модалки (закрыть модалку)
     clearOrderModalData: (state) => {
       state.orderModalData = null;
@@ -182,20 +185,18 @@ export const burgerSlice = createSlice({
       .addCase(fetchOrder.pending, (state) => {
         // 1. Ставим флаг загрузки заказа (блокирует кнопку)
         state.orderRequest = true;
+        state.succsess = false;
       })
       .addCase(fetchOrder.fulfilled, (state, action) => {
         // 2. Заказ успешен: сохраняем данные для модалки
         state.orderRequest = false;
+        state.succsess = true;
         state.orderModalData = Object.assign(action.payload.order);
-        // 3. Очищаем конструктор после успешного заказа (опционально, по ТЗ)
-        state.constructorItems.bun = null;
-        state.constructorItems.ingredients = [];
-        state.burgerConstructor.bun._id = '';
-        state.burgerConstructor.ingredients = [];
       })
       .addCase(fetchOrder.rejected, (state, action) => {
         // 4. Ошибка заказа
         state.orderRequest = false;
+        state.succsess = false;
       })
       .addCase(getOrders.rejected, (state, action) => {
         state.error = action.error.message ?? null;
@@ -245,7 +246,7 @@ export const selectBurgerConstructor = (state: RootState) =>
   state.burger.burgerConstructor;
 export const selectOrders = (state: RootState) => state.burger.orders;
 export const selectFeeds = (state: RootState) => state.burger.feeds;
-
+export const selectSuccess = (state: RootState) => state.burger.succsess;
 // Селекторы для фильтрации по типам
 const selectIngredientsAll = (state: RootState) => state.burger.ingredients;
 

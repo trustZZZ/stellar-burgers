@@ -29,13 +29,17 @@ import { getUserThunk } from '@slices/userSlice';
 const App = () => {
   /** TODO: взять переменные из стора */
   const dispatch: AppDispatch = useDispatch();
+
   const location = useLocation();
-  const background = location.state?.background;
+  const locationState = location.state as { background?: Location };
+  const background = locationState && locationState.background;
+
   const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchIngredients());
     dispatch(getUserThunk());
     dispatch(fetchFeed());
+    console.log(locationState, background);
   }, [dispatch]);
   const isIngredientsLoading = useSelector(selectLoading);
   const ingredients = useSelector(selectIngredients);

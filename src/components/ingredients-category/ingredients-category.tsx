@@ -25,7 +25,6 @@ export const IngredientsCategory = forwardRef<
       }
       counters[id]++;
     });
-    console.log(Object.keys(counters), Object.values(counters));
     return counters;
   }, [burgerConstructor.ingredients.length, burgerConstructor.bun._id]);
   return (

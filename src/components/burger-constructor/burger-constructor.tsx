@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { BurgerConstructorUI } from '@ui';
 import {
   selectConstructorItems,
@@ -6,7 +6,8 @@ import {
   selectOrderModalData,
   fetchOrder,
   clearConstructor,
-  clearOrderModalData
+  clearOrderModalData,
+  selectSuccess
 } from '@slices/burgerSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/services/store';
@@ -20,24 +21,28 @@ export const BurgerConstructor: FC = () => {
   const user = useSelector(selectUser);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+
+  const orderSuccess = useSelector(selectSuccess);
+
   const onOrderClick = () => {
     if (!user) {
       navigate('/login');
       return;
     }
     if (!constructorItems?.bun || orderRequest) return;
-    else {
-      dispatch(
-        fetchOrder({
-          bun: constructorItems.bun,
-          ingredients: constructorItems.ingredients
-        })
-      );
-    }
+
+    dispatch(
+      fetchOrder({
+        bun: constructorItems.bun,
+        ingredients: constructorItems.ingredients
+      })
+    );
   };
   const closeOrderModal = () => {
-    dispatch(clearConstructor());
-    dispatch(clearOrderModalData());
+    if (orderSuccess) {
+      dispatch(clearOrderModalData());
+      dispatch(clearConstructor());
+    }
   };
 
   const price = useMemo(() => {
