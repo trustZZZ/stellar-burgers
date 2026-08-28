@@ -1,12 +1,17 @@
+import { selectUser, updateUserThunk } from '@slices/userSlice';
 import { ProfileUI } from '@ui-pages';
+import { TUser } from '@utils-types';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'src/services/store';
 
 export const Profile: FC = () => {
   /** TODO: взять переменную из стора */
-  const user = {
-    name: '',
-    email: ''
-  };
+  const user = useSelector(selectUser);
+  const dispatch: AppDispatch = useDispatch();
+  if (!user) {
+    return null;
+  }
 
   const [formValue, setFormValue] = useState({
     name: user.name,
@@ -29,6 +34,12 @@ export const Profile: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    const newUserData: TUser & { password: string } = {
+      name: formValue.name,
+      email: formValue.email,
+      password: formValue.password
+    };
+    dispatch(updateUserThunk(newUserData));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -56,6 +67,4 @@ export const Profile: FC = () => {
       handleInputChange={handleInputChange}
     />
   );
-
-  return null;
 };

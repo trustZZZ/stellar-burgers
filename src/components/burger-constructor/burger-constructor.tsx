@@ -1,36 +1,62 @@
-import { FC, useMemo } from 'react';
-import { TConstructorIngredient } from '@utils-types';
+import { FC, useMemo, useRef } from 'react';
 import { BurgerConstructorUI } from '@ui';
-
+import {
+  selectConstructorItems,
+  selectOrderRequest,
+  selectOrderModalData,
+  fetchOrder,
+  clearConstructor,
+  clearOrderModalData,
+  selectSuccess
+} from '@slices/burgerSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch } from 'src/services/store';
+import { selectUser } from '@slices/userSlice';
+import { useNavigate } from 'react-router-dom';
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const constructorItems = useSelector(selectConstructorItems);
+  const orderRequest = useSelector(selectOrderRequest);
+  const orderModalData = useSelector(selectOrderModalData);
+  const user = useSelector(selectUser);
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const orderRequest = false;
-
-  const orderModalData = null;
+  const orderSuccess = useSelector(selectSuccess);
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!constructorItems?.bun || orderRequest) return;
+
+    dispatch(
+      fetchOrder({
+        bun: constructorItems.bun,
+        ingredients: constructorItems.ingredients
+      })
+    );
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    if (orderSuccess) {
+      dispatch(clearOrderModalData());
+      dispatch(clearConstructor());
+    }
+  };
 
-  const price = useMemo(
-    () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
-        (s: number, v: TConstructorIngredient) => s + v.price,
-        0
-      ),
-    [constructorItems]
-  );
+  const price = useMemo(() => {
+    if (!constructorItems) return 0;
 
-  return null;
+    const bunPrice = constructorItems.bun ? constructorItems.bun.price * 2 : 0;
+
+    const ingredientsPrice = constructorItems.ingredients.reduce(
+      (sum, item) => sum + item.price,
+      0
+    );
+
+    return bunPrice + ingredientsPrice;
+  }, [constructorItems]);
 
   return (
     <BurgerConstructorUI
