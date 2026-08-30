@@ -5,7 +5,7 @@ import { BurgerConstructor } from '../../components';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => (
-  <main className={styles.containerMain}>
+  <main data-testid='constructor' className={styles.containerMain}>
     <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
       Соберите бургер
     </h1>

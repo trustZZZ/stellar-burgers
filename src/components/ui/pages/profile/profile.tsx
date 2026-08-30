@@ -16,7 +16,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
   handleInputChange
 }) => (
   <main className={`${commonStyles.container}`}>
-    <div className={`mt-30 mr-15 ${styles.menu}`}>
+    <div data-testid='profile-menu' className={`mt-30 mr-15 ${styles.menu}`}>
       <ProfileMenu />
     </div>
     <form
