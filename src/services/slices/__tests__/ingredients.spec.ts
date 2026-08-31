@@ -136,7 +136,7 @@ const burgerState = {
   }
 };
 
-describe('Проверка тестов с массивом ингредиентов для слайса burgerSlice', () => {
+describe('Проверка запросов на сервер для слайса burgerSlice', () => {
   test('должен обработать pending (загрузка началась)', () => {
     // Мы НЕ вызываем fetchIngredients(). Мы берем готовый экшен.
     const action = fetchIngredients.pending('');
@@ -161,7 +161,9 @@ describe('Проверка тестов с массивом ингредиент
     expect(newState.loading).toBe(false);
     expect(newState.error).toBe('Network Error');
   });
+})
 
+describe('Проверка тестов с массивом ингредиентов для слайса burgerSlice', () => {
   test('должен игнорировать неизвестный экшен', () => {
     const action = { type: 'UNKNOWN_ACTION_TYPE' };
     const newState = reducer(initialState, action);

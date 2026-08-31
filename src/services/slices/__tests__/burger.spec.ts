@@ -164,9 +164,9 @@ const response = {
 
 const orderModalData = { bun: mockBun, ingredients: mockIngredients };
 
-describe('Проверка тестов контсруктора бургеров для слайса burgerSlice', () => {
-  test('должен обработать pending (загрузка началась)', () => {
-    // Мы НЕ вызываем fetchIngredients(). Мы берем готовый экшен.
+
+describe('Проверка запросов на сервер для слайса burgerSlice', () => {
+    test('должен обработать pending (загрузка началась)', () => {
     const action = fetchOrder.pending('', orderModalData);
     const newState = reducer(initialState, action);
 
@@ -194,7 +194,9 @@ describe('Проверка тестов контсруктора бургеро�
     expect(newState.orderRequest).toBe(false);
     expect(newState.succsess).toBe(false);
   });
+} );
 
+describe('Проверка тестов контсруктора бургеров для слайса burgerSlice', () => {
   test('должен игнорировать неизвестный экшен', () => {
     const action = { type: 'UNKNOWN_ACTION_TYPE' };
     const newState = reducer(initialState, action);
