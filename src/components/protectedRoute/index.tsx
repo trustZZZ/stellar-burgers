@@ -23,7 +23,6 @@ export const ProtectedRoute = ({ onlyUnAuth }: ProtectedRouteProps) => {
   // 3. Если маршрут для неавторизованного пользователя, но пользователь авторизован
   if (onlyUnAuth && user) {
     const from = location.state?.from || { pathname: '/' };
-    console.log(location.state);
     return <Navigate replace to={from} />;
   }
 

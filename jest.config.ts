@@ -7,14 +7,7 @@ import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
   transform: {
-    // '^.+\\.[tj]sx?$' для обработки файлов js/ts с помощью `ts-jest`
-    // '^.+\\.m?[tj]sx?$' для обработки файлов js/ts/mjs/mts с помощью `ts-jest`
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        // настройки для ts-jest
-      }
-    ]
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json' }]
   },
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -43,7 +36,7 @@ const config: JestConfigWithTsJest = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: 'v8'
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -105,10 +98,28 @@ const config: JestConfigWithTsJest = {
   // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-  // modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: ['constructor.spec'],
 
   // Activates notifications for test results
   // notify: false,
+  moduleNameMapper: {
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@ui/(.*)$': '<rootDir>/src/components/ui/$1',
+    '^@ui-pages/(.*)$': '<rootDir>/src/components/ui/pages/$1',
+    '^@utils-types/(.*)$': '<rootDir>/src/utils/types/$1',
+
+    // ВАЖНО: @api должен вести на папку utils, а не на конкретный файл!
+    // Теперь import { ... } from '@api/burger-api' будет работать
+    '^@api/(.*)$': '<rootDir>/src/utils/$1',
+
+    '^@slices/(.*)$': '<rootDir>/src/services/slices/$1',
+    '^@selectors/(.*)$': '<rootDir>/src/services/selectors/$1',
+    '^@utils-cookie/(.*)$': '<rootDir>/src/utils/cookie/$1',
+
+    // Для моков (проверь, что папка mocks лежит в корне проекта)
+    '^@mocks/(.*)$': '<rootDir>/mocks/$1'
+  }
 
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",

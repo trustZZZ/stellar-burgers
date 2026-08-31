@@ -6,7 +6,7 @@ import {
   getOrderByNumberApi,
   getOrdersApi,
   orderBurgerApi
-} from '@api';
+} from '../../utils/burger-api';
 import { TIngredient, TOrder } from '@utils-types';
 import { RootState } from '../store';
 import { v4 as uuidv4 } from 'uuid';
@@ -81,7 +81,7 @@ type TBurgerState = {
   feedNumber: string;
   succsess: boolean;
 };
-const initialState: TBurgerState = {
+export const initialState: TBurgerState = {
   loading: false,
   error: null,
   ingredients: [],
@@ -193,7 +193,7 @@ export const burgerSlice = createSlice({
         state.succsess = true;
         state.orderModalData = Object.assign(action.payload.order);
       })
-      .addCase(fetchOrder.rejected, (state, action) => {
+      .addCase(fetchOrder.rejected, (state) => {
         // 4. Ошибка заказа
         state.orderRequest = false;
         state.succsess = false;
@@ -206,9 +206,16 @@ export const burgerSlice = createSlice({
       })
       .addCase(fetchFeed.pending, (state) => {
         state.feeds.isLoading = true;
+        state.feeds.success = false;
+      })
+      .addCase(fetchFeed.rejected, (state) => {
+        state.feeds.isLoading = false;
+        state.feeds.success = false;
       })
       .addCase(fetchFeed.fulfilled, (state, action) => {
         state.feeds = Object.assign(action.payload, { isLoading: false });
+        state.feeds.isLoading = false;
+        state.feeds.success = true;
       });
   }
 });

@@ -13,7 +13,6 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
   const isConstructorActive = location.pathname === '/';
   const isFeedActive = location.pathname === '/feed';
   const isProfileActive = location.pathname === '/profile';
-  console.log(isProfileActive);
 
   return (
     <header className={styles.header}>
