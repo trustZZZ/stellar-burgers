@@ -2,7 +2,6 @@ import {
   addIngredient,
   burgerSlice,
   clearConstructor,
-  fetchIngredients,
   fetchOrder,
   moveDownIngredient,
   moveUpIngredient,

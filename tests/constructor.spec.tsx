@@ -186,10 +186,7 @@ test.describe('Конструктор бургера: добавление ин�
     await modalOverlay.click({ position: { x: 10, y: 10 } });
     await expect(modalOverlay).not.toBeVisible();
   });
-  test('должен проверить работу создания заказа', async ({
-    context,
-    page
-  }) => {
+  test('должен проверить работу создания заказа', async ({ context, page }) => {
     await context.addCookies([
       {
         name: 'accessToken',
@@ -256,7 +253,7 @@ test.describe('Конструктор бургера: добавление ин�
     });
 
     const modal = page.getByTestId('modal');
-    await expect(modal).toBeVisible({ timeout: 10000 });
+    await expect(modal).toBeVisible();
     await expect(modal).toContainText('Оформляем заказ...');
     await expect(page.getByTestId('loader')).not.toBeVisible();
     await expect(page.getByTestId('successful-order-answer')).toContainText(
