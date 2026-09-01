@@ -30,6 +30,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       </div>
     ) : (
       <div
+        data-testid='constructor-bun-up'
         className={`${styles.noBuns} ${styles.noBunsTop} ml-8 mb-4 mr-5 text text_type_main-default`}
       >
         Выберите булки
@@ -49,6 +50,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         )
       ) : (
         <div
+          data-testid='constructor-ingredient'
           className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
         >
           Выберите начинку
@@ -67,6 +69,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       </div>
     ) : (
       <div
+        data-testid='constructor-bun-down'
         className={`${styles.noBuns} ${styles.noBunsBottom} ml-8 mb-4 mr-5 text text_type_main-default`}
       >
         Выберите булки
@@ -74,10 +77,13 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     )}
     <div className={`${styles.total} mt-10 mr-4`}>
       <div className={`${styles.cost} mr-10`}>
-        <p className={`text ${styles.text} mr-2`}>{price}</p>
+        <p data-testid='total-price' className={`text ${styles.text} mr-2`}>
+          {price}
+        </p>
         <CurrencyIcon type='primary' />
       </div>
       <Button
+        data-testid='btn-add-constructor'
         htmlType='button'
         type='primary'
         size='large'

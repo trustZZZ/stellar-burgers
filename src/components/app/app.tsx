@@ -55,6 +55,7 @@ const App = () => {
                 <Preloader />
               ) : error ? (
                 <div
+                  data-testid='error'
                   className={`${styles.error} text text_type_main-medium pt-4`}
                 >
                   {error}
@@ -63,6 +64,7 @@ const App = () => {
                 <ConstructorPage />
               ) : (
                 <div
+                  data-testid='noIngredients'
                   className={`${styles.title} text text_type_main-medium pt-4`}
                 >
                   Нет игредиентов

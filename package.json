@@ -33,6 +33,7 @@
     "@babel/preset-env": "^7.23.6",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@playwright/test": "^1.62.1",
     "@storybook/addon-essentials": "^7.6.10",
     "@storybook/addon-interactions": "^7.6.10",
     "@storybook/addon-links": "^7.6.10",
@@ -74,6 +75,7 @@
     "jest-css-modules-transform": "^4.4.2",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^23.0.1",
+    "msw": "^2.15.0",
     "prettier": "^3.1.1",
     "prettier-eslint": "^16.2.0",
     "prettier-eslint-cli": "^8.0.1",
@@ -92,7 +94,11 @@
     "build-storybook": "storybook build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier ./src --write"
+    "format": "prettier ./src --write",
+    "test": "jest",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:watch": "playwright test --watch"
   },
   "eslintConfig": {
     "extends": [
