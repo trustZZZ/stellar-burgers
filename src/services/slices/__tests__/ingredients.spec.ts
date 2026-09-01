@@ -7,7 +7,11 @@ import {
   setBun
 } from '@slices/burgerSlice';
 import { v4 as uuidv4 } from 'uuid';
-import { mockIngredients, mockBun, initialState } from '../helper';
+import {
+  mockIngredients,
+  mockBun,
+  initialState
+} from '../../../../tests/fixtures.ts.js';
 
 const { reducer } = burgerSlice;
 

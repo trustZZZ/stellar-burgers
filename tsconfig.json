@@ -30,5 +30,5 @@
       "@mocks/*": ["./mocks/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "tests/fixtures.ts.ts"]
 }
