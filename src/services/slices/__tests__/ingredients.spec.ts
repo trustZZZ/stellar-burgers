@@ -11,7 +11,7 @@ import {
   mockIngredients,
   mockBun,
   initialState
-} from '../../../../tests/fixtures.ts.js';
+} from '../../../../tests/fixtures';
 
 const { reducer } = burgerSlice;
 
