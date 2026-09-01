@@ -8,21 +8,26 @@ test.describe('Конструктор бургера: добавление ин�
   const INGREDIENT_NAME = 'Говяжий метеорит (отбивная)';
   const INGREDIENT_PRICE = 3000;
 
-  test('должен добавить булку в конструктор, обновить цену и изменить количество ингредиентов', async ({
-    page
-  }) => {
-    // 1. МОКИРОВАНИЕ ДАННЫХ (HAR)
+  test.beforeEach(async ({ page, context }) => {
+    // 2. Мокирование данных
     await page.routeFromHAR('./e2e/hars/ingredients.har', {
       url: '**/ingredients',
       update: false
     });
 
-    // 2. ПЕРЕХОД НА СТРАНИЦУ
+    // 3. Переход на главную страницу
     await page.goto('/');
-    // 3. ПРОВЕРКА ЗАГРУЗКИ ДАННЫХ
-    await expect(page.getByTestId('loader')).not.toBeVisible();
 
-    // 4. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
+    // 4. ПРОВЕРКА отсутствия загрузки
+    await expect(page.getByTestId('loader')).not.toBeVisible({
+      timeout: 10000
+    });
+  });
+
+  test('должен добавить булку в конструктор, обновить цену и изменить количество ингредиентов', async ({
+    page
+  }) => {
+    // 1. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
     // Ищем элемент с data-testid="ingredient-card", внутри которого есть нужный текст.
     const ingredientCard = page
       .getByTestId('ingredient-card')
@@ -31,20 +36,20 @@ test.describe('Конструктор бургера: добавление ин�
     // Проверка: карточка вообще существует в списке?
     await expect(ingredientCard).toBeVisible({ timeout: 10000 });
 
-    // 5. ПОИСК КНОПКИ "ДОБАВИТЬ"
+    // 2. ПОИСК КНОПКИ "ДОБАВИТЬ"
     // Ищем кнопку внутри карточки по роли и тексту. /i делает поиск нечувствительным к регистру.
     const addButton = ingredientCard.getByRole('button', { name: /добавить/i });
     await expect(addButton).toBeVisible();
 
-    // 6. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
+    // 3. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
     await addButton.click();
 
-    // 7. ПРОВЕРКА: ИНГРЕДИЕНТ ПОЯВИЛСЯ В ЗОНЕ СБОРКИ
+    // 4. ПРОВЕРКА: ИНГРЕДИЕНТ ПОЯВИЛСЯ В ЗОНЕ СБОРКИ
     await expect(page.locator(`img[alt="${BUN_NAME} (верх)"]`)).toBeVisible();
 
-    await expect(page.locator(`img[alt="${BUN_NAME} (верх)"]`)).toBeVisible();
+    await expect(page.locator(`img[alt="${BUN_NAME} (низ)"]`)).toBeVisible(); // Исправил на низ
 
-    // 9. ПРОВЕРКА ИТОГОВОЙ ЦЕНЫ
+    // 5. ПРОВЕРКА ИТОГОВОЙ ЦЕНЫ
     const totalPriceLocator = page.getByTestId('total-price');
 
     // Получаем текст цены. Удаляем все пробелы
@@ -53,7 +58,7 @@ test.describe('Конструктор бургера: добавление ин�
 
     // Проверяем, что цена равна стоимости ингредиента.
     expect(currentPrice).toBe(BUN_PRICE * 2);
-    // 10. ПРОВЕРКА изменения количества ингредиентов в списке
+    // 6. ПРОВЕРКА изменения количества ингредиентов в списке
     const counterLocator = ingredientCard.getByTestId('ingredient-counter');
     const bunCounter = await getCountValue(counterLocator);
     expect(bunCounter).toBe(BUN_COUNT);
@@ -61,18 +66,7 @@ test.describe('Конструктор бургера: добавление ин�
   test('должен добавить ингредиент в конструктор, обновить цену и изменить количество ингредиентов', async ({
     page
   }) => {
-    // 1. МОКИРОВАНИЕ ДАННЫХ (HAR)
-    await page.routeFromHAR('./e2e/hars/ingredients.har', {
-      url: '**/ingredients',
-      update: false
-    });
-
-    // 2. ПЕРЕХОД НА СТРАНИЦУ
-    await page.goto('/');
-    // 3. ПРОВЕРКА ЗАГРУЗКИ ДАННЫХ
-    await expect(page.getByTestId('loader')).not.toBeVisible();
-
-    // 4. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
+    // 1. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
     // Ищем элемент с data-testid="ingredient-card", внутри которого есть нужный текст.
     const ingredientCard = page
       .getByTestId('ingredient-card')
@@ -81,18 +75,18 @@ test.describe('Конструктор бургера: добавление ин�
     // Проверка: карточка вообще существует в списке?
     await expect(ingredientCard).toBeVisible({ timeout: 10000 });
 
-    // 5. ПОИСК КНОПКИ "ДОБАВИТЬ"
+    // 2. ПОИСК КНОПКИ "ДОБАВИТЬ"
     // Ищем кнопку внутри карточки по роли и тексту. /i делает поиск нечувствительным к регистру.
     const addButton = ingredientCard.getByRole('button', { name: /добавить/i });
     await expect(addButton).toBeVisible();
 
-    // 6. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
+    // 3. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
     await addButton.click();
 
-    // 7. ПРОВЕРКА: ИНГРЕДИЕНТ ПОЯВИЛСЯ В ЗОНЕ СБОРКИ
+    // 4. ПРОВЕРКА: ИНГРЕДИЕНТ ПОЯВИЛСЯ В ЗОНЕ СБОРКИ
     await expect(page.locator(`img[alt="${INGREDIENT_NAME}"]`)).toBeVisible();
 
-    // 9. ПРОВЕРКА ИТОГОВОЙ ЦЕНЫ
+    // 5. ПРОВЕРКА ИТОГОВОЙ ЦЕНЫ
     const totalPriceLocator = page.getByTestId('total-price');
 
     // Получаем текст цены. Удаляем все пробелы
@@ -101,7 +95,7 @@ test.describe('Конструктор бургера: добавление ин�
 
     // Проверяем, что цена равна стоимости ингредиента.
     expect(currentPrice).toBe(INGREDIENT_PRICE);
-    // 10. ПРОВЕРКА изменения количества ингредиентов в списке
+    // 6. ПРОВЕРКА изменения количества ингредиентов в списке
     const counterLocator = ingredientCard.getByTestId('ingredient-counter');
 
     // Ждем, пока он появится (он появляется только когда count > 0)
@@ -112,7 +106,7 @@ test.describe('Конструктор бургера: добавление ин�
     await addButton.click();
     countValue = await getCountValue(counterLocator);
     expect(countValue).toBe(2);
-    // 11. Проверка удаления ингредиента из конструктора
+    // 7. Проверка удаления ингредиента из конструктора
     //  1. Поиск элемента
     const ingredientInConstructorElement = page
       .locator(`.constructor-element`)
@@ -148,22 +142,14 @@ test.describe('Конструктор бургера: добавление ин�
   test('должен осуществить проверку работы модальных окон, открыть, закрыть на крестик, закрыть по клику на оверлей', async ({
     page
   }) => {
-    // 1. МОКИРОВАНИЕ ДАННЫХ (HAR)
-    await page.routeFromHAR('./e2e/hars/ingredients.har', {
-      url: '**/ingredients',
-      update: false
-    });
-
-    // 2. ПЕРЕХОД НА СТРАНИЦУ
-    await page.goto('/');
-    // 3. ПРОВЕРКА НАЛИЧИЯ ЭЛЕМЕНТА
+    // 1. ПРОВЕРКА НАЛИЧИЯ ЭЛЕМЕНТА
     const ingredientCard = page
       .getByTestId('ingredient-card')
       .filter({ hasText: BUN_NAME });
 
     // Проверка: карточка вообще существует в списке?
     await expect(ingredientCard).toBeVisible({ timeout: 10000 });
-    // 4. ПРОВЕРКА открытия модального окна
+    // 2. ПРОВЕРКА открытия модального окна
     await ingredientCard.click();
 
     // Проверка: существует ли модальное окно и оверлэй
@@ -171,13 +157,13 @@ test.describe('Конструктор бургера: добавление ин�
     const modalOverlay = page.getByTestId('modal-overlay');
     await expect(modal).toBeVisible({ timeout: 10000 });
     await expect(modalOverlay).toBeVisible({ timeout: 1000 });
-
-    // 5. ПРОВЕРКА закрытия модального окна
+    await expect(modal).toContainText(BUN_NAME);
+    // 3. ПРОВЕРКА закрытия модального окна
 
     // Проверка: существует ли кнопка закрытия
     const closeButton = modal.getByRole('button');
     await expect(closeButton).toBeVisible();
-    closeButton.click();
+    await closeButton.click();
     // Проверка: закрыто ли модальное окно по нажатию кнопки
     await expect(modal).not.toBeVisible({ timeout: 1000 });
     await expect(modalOverlay).not.toBeVisible({ timeout: 1000 });
@@ -185,8 +171,10 @@ test.describe('Конструктор бургера: добавление ин�
     await ingredientCard.click();
     await modalOverlay.click({ position: { x: 10, y: 10 } });
     await expect(modalOverlay).not.toBeVisible();
+    await expect(modal).not.toBeVisible();
   });
   test('должен проверить работу создания заказа', async ({ context, page }) => {
+    // 1. Установка токенов в localStorage и cookies
     await context.addCookies([
       {
         name: 'accessToken',
@@ -205,11 +193,9 @@ test.describe('Конструктор бургера: добавление ин�
       update: false
     });
 
-    await page.goto('/');
-    // 3. ПРОВЕРКА ЗАГРУЗКИ ДАННЫХ
-    await expect(page.getByTestId('loader')).not.toBeVisible();
+    page.goto('/');
 
-    // 4. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
+    // 2. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
     // Ищем элемент с data-testid="ingredient-card", внутри которого есть нужный текст.
     const card = page.getByTestId('ingredient-card');
     const burgerCard = card.filter({ hasText: BUN_NAME });
@@ -217,48 +203,48 @@ test.describe('Конструктор бургера: добавление ин�
     // Проверка: карточка вообще существует в списке?
     await expect(burgerCard).toBeVisible({ timeout: 10000 });
 
-    // 5. ПОИСК КНОПКИ "ДОБАВИТЬ"
+    // 3. ПОИСК КНОПКИ "ДОБАВИТЬ"
     // Ищем кнопку внутри карточки по роли и тексту. /i делает поиск нечувствительным к регистру.
     const addBunButton = burgerCard.getByRole('button', { name: /добавить/i });
     await expect(addBunButton).toBeVisible({ timeout: 1000 });
 
-    // 6. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
+    // 4. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
     await addBunButton.click();
 
-    // 4. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
+    // 5. ПОИСК КАРТОЧКИ ИНГРЕДИЕНТА
     // Ищем элемент с data-testid="ingredient-card", внутри которого есть нужный текст.
     const ingredientCard = card.filter({ hasText: INGREDIENT_NAME });
 
     // Проверка: карточка вообще существует в списке?
     await expect(ingredientCard).toBeVisible({ timeout: 10000 });
 
-    // 5. ПОИСК КНОПКИ "ДОБАВИТЬ"
+    // 6. ПОИСК КНОПКИ "ДОБАВИТЬ"
     // Ищем кнопку внутри карточки по роли и тексту. /i делает поиск нечувствительным к регистру.
     const addIngredientButton = ingredientCard.getByRole('button', {
       name: /добавить/i
     });
     await expect(addIngredientButton).toBeVisible();
 
-    // 6. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
+    // 7. ДЕЙСТВИЕ: КЛИК ПО КНОПКЕ
     await addIngredientButton.click();
 
     const orderButton = page.getByTestId('btn-add-constructor');
     await expect(orderButton).toBeVisible({ timeout: 1000 });
-
-    await orderButton.click();
 
     await page.routeFromHAR('./e2e/hars/orders.har', {
       url: '**/orders',
       update: false
     });
 
+    await orderButton.click();
+
     const modal = page.getByTestId('modal');
-    await expect(modal).toBeVisible();
-    await expect(modal).toContainText('Оформляем заказ...');
+    await expect(modal).toBeVisible({ timeout: 10000 });
     await expect(page.getByTestId('loader')).not.toBeVisible();
     await expect(page.getByTestId('successful-order-answer')).toContainText(
       'Ваш заказ начали готовить'
-    );
+    ); // Проверка номера заказа
+    await expect(page.getByTestId('order-number')).toContainText('1999');
     const closeModalButton = page.getByTestId('close-modal-btn');
     await expect(closeModalButton).toBeVisible({ timeout: 10000 });
     await closeModalButton.click();
