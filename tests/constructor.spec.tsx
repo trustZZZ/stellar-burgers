@@ -10,7 +10,7 @@ test.describe('Конструктор бургера: добавление ин�
 
   test.beforeEach(async ({ page, context }) => {
     // 2. Мокирование данных
-    await page.routeFromHAR('./e2e/hars/ingredients.har', {
+    await page.routeFromHAR('./e2e/tests/hars/ingredients.har', {
       url: '**/ingredients',
       update: false
     });
@@ -188,7 +188,7 @@ test.describe('Конструктор бургера: добавление ин�
       localStorage.setItem('refreshToken', 'test-refresh-token');
     });
     //   // 1. МОКИРОВАНИЕ ДАННЫХ (HAR)
-    await page.routeFromHAR('./e2e/hars/user.har', {
+    await page.routeFromHAR('./e2e/tests/hars/user.har', {
       url: '**/user',
       update: false
     });
@@ -231,7 +231,7 @@ test.describe('Конструктор бургера: добавление ин�
     const orderButton = page.getByTestId('btn-add-constructor');
     await expect(orderButton).toBeVisible({ timeout: 1000 });
 
-    await page.routeFromHAR('./e2e/hars/orders.har', {
+    await page.routeFromHAR('./e2e/tests/hars/orders.har', {
       url: '**/orders',
       update: false
     });
